@@ -6,77 +6,58 @@ import com.hashedin.util.FileReader
 import scala.collection.immutable.ListMap
 import scala.collection.mutable.ListBuffer
 
-class MovieService {
+class MovieService extends MovieServiceTrait {
 
   private var moviesDetails: ListBuffer[Movies] = new ListBuffer[Movies]()
 
-  def movieData(fileName : String) {
+  def movieData(fileName: String) {
     val fileReader = new FileReader()
     moviesDetails = fileReader.fileContainReading(fileName)
   }
 
   def generateReportTitles(directorName: String, fromYear: Int, toYear: Int) {
-    var noOutputFlag = true
-    for (movie <- moviesDetails) {
-      if (movie.getYear() >= fromYear && movie.getYear() <= toYear && movie.getDirector().toLowerCase.contains(directorName.toLowerCase)) {
-        println(movie)
-        noOutputFlag = false
-      }
-    }
-    if(noOutputFlag == true){
+    val movie = moviesDetails.filter(movie => {
+      movie.getYear() >= fromYear && movie.getYear() <= toYear && movie.getDirector().toLowerCase.contains(directorName.toLowerCase)
+    })
+    if (movie == null || movie.isEmpty) {
       println("No match data found")
+    } else {
+      movie.foreach(println)
     }
   }
 
   def generateReportOfEnglishWithUserReview(userReview: Int) {
-    val movieReviewList: ListBuffer[Movies] = new ListBuffer[Movies]()
-    for (movie <- moviesDetails) {
-      if (movie.getLanguage().toLowerCase.contains("english") && movie.getReviewsFromUsers() > userReview) {
-        movieReviewList += movie
-      }
-    }
-    var noOutputFlag = true
+    val movieReviewList = moviesDetails.filter(movie => {
+      movie.getLanguage().toLowerCase.contains("english") && movie.getReviewsFromUsers() > userReview
+    })
     val sortedMovieListBaseOnReview = movieReviewList sortWith (_.getReviewsFromUsers() > _.getReviewsFromUsers())
-    for (movie <- sortedMovieListBaseOnReview) {
-      noOutputFlag = false
-      println(movie)
-    }
-    if(noOutputFlag == true){
+    if (sortedMovieListBaseOnReview == null || sortedMovieListBaseOnReview.isEmpty) {
       println("No match data found")
+    } else {
+      sortedMovieListBaseOnReview.foreach(println)
     }
   }
 
   def generateHighestBudgetTitlesForGivenYear(country: String, year: Int) {
-    val budgetMovie: ListBuffer[Movies] = new ListBuffer[Movies]()
-    var noOutputFlag = true
-    for (movie <- moviesDetails) {
-      if (country.equalsIgnoreCase(movie.getCountry()) && movie.getYear() == year) {
-        budgetMovie += movie
-        noOutputFlag = false
-      }
-    }
-    if(noOutputFlag == true){
+    val budgetMovie = moviesDetails.filter(movie => {
+      country.equalsIgnoreCase(movie.getCountry()) && movie.getYear() == year
+    })
+    if (budgetMovie == null || budgetMovie.isEmpty) {
       println("No match data found")
-    }else{
+    } else {
       println(budgetMovie.reduceLeft(maxBudget))
     }
   }
 
   def generateReportOfLongestTitleDuration(country: String, vote: Int) {
-    val movieList: ListBuffer[Movies] = new ListBuffer[Movies]()
-    var noOutputFlag = true
-    for (movie <- moviesDetails) {
-      if (movie.getCountry().toLowerCase.contains(country.toLowerCase()) && movie.getVotes() == vote) {
-        noOutputFlag = false
-        movieList += movie
-      }
-    }
+    val movieList = moviesDetails.filter(movie => {
+      movie.getCountry().toLowerCase.contains(country.toLowerCase()) && movie.getVotes() == vote
+    })
     val sortedMovieListBaseOnDuration = movieList sortWith (_.getDuration() > _.getDuration())
-    for (movie <- sortedMovieListBaseOnDuration) {
-      println(movie)
-    }
-    if(noOutputFlag == true){
+    if (sortedMovieListBaseOnDuration == null || sortedMovieListBaseOnDuration.isEmpty) {
       println("No match data found")
+    } else {
+      sortedMovieListBaseOnDuration.foreach(println)
     }
   }
 
@@ -97,7 +78,7 @@ class MovieService {
     for (e <- sortLanguageBasedOnCount) {
       println("Language:- " + e._1 + " || count:- " + e._2)
     }
-    if(noOutputFlag == true){
+    if (noOutputFlag == true) {
       println("No match data found")
     }
   }
