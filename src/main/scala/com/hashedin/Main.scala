@@ -8,7 +8,7 @@ import scala.io.StdIn.readLine
 object Main {
 
   def main(args: Array[String]) {
-    val fileName = "/home/hasher/Downloads/imdb_movies.csv"
+    val fileName = "imdb_movies.csv"
     val movieService = new MovieService()
     movieService.movieData(fileName)
     println("1 Generate Report titles directed by given director in the given year range")
