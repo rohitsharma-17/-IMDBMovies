@@ -66,7 +66,7 @@ class MovieService extends MovieServiceTrait {
     for (movie <- moviesDetails) {
       if (movie.getBudget() > startBudgetRange && movie.getBudget() > endBudgetRange) {
         if (budgetMovieMap.contains(movie.getLanguage().trim)) {
-          budgetMovieMap += (movie.getLanguage().trim -> (budgetMovieMap.get(movie.getLanguage().trim).get + 1))
+          budgetMovieMap += (movie.getLanguage().trim -> (budgetMovieMap(movie.getLanguage().trim) + 1))
         } else {
           budgetMovieMap += (movie.getLanguage().trim -> 1)
         }
