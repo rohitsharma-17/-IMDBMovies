@@ -8,7 +8,7 @@ import scala.collection.mutable.ListBuffer
 
 class MovieService extends MovieServiceTrait {
 
-  private var moviesDetails: ListBuffer[Movies] = new ListBuffer[Movies]()
+  private var moviesDetails: ListBuffer[Movies] = null
 
   def movieData(fileName: String) {
     val fileReader = new FileReader()
@@ -63,10 +63,8 @@ class MovieService extends MovieServiceTrait {
 
   def generateLanguageWiseReportToCountForBudgetRange(startBudgetRange: Long, endBudgetRange: Long) {
     var budgetMovieMap = Map[String, Int]()
-    var noOutputFlag = true
     for (movie <- moviesDetails) {
       if (movie.getBudget() > startBudgetRange && movie.getBudget() > endBudgetRange) {
-        noOutputFlag = false
         if (budgetMovieMap.contains(movie.getLanguage().trim)) {
           budgetMovieMap += (movie.getLanguage().trim -> (budgetMovieMap.get(movie.getLanguage().trim).get + 1))
         } else {
@@ -75,11 +73,12 @@ class MovieService extends MovieServiceTrait {
       }
     }
     val sortLanguageBasedOnCount = ListMap(budgetMovieMap.toSeq.sortWith(_._2 > _._2): _*)
-    for (e <- sortLanguageBasedOnCount) {
-      println("Language:- " + e._1 + " || count:- " + e._2)
-    }
-    if (noOutputFlag == true) {
+    if (sortLanguageBasedOnCount == null || sortLanguageBasedOnCount.isEmpty) {
       println("No match data found")
+    }else{
+      for (e <- sortLanguageBasedOnCount) {
+        println("Language:- " + e._1 + " || count:- " + e._2)
+      }
     }
   }
 
